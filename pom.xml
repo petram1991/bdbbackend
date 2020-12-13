@@ -38,6 +38,50 @@
             <version>1.18.6</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.16.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <version>1.6.0.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- 2. Arquillian container adapter for the target container-->
+        <!-- container can be either: embedded, managed or remote -->
+        <dependency>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed</artifactId>
+            <version>1.0.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-junit5</artifactId>
+            <version>2.0.1.Final</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <finalName>bdbbackend</finalName>
@@ -71,6 +115,84 @@
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>2.8.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                </plugin>
+                <plugin>
+                    <groupId>net.wasdev.wlp.maven.plugins</groupId>
+                    <artifactId>liberty-maven-plugin</artifactId>
+                    <version>3.0.M1</version> <!-- plugin version -->
+                    <configuration>
+                        <assemblyArtifact>
+                            <!-- Liberty server to run test against -->
+                            <groupId>io.openliberty</groupId>
+                            <artifactId>openliberty-runtime</artifactId>
+                            <version>20.0.0.12</version>
+                            <type>zip</type>
+                        </assemblyArtifact>
+                        <configFile>src/test/resources/server.xml</configFile> <!-- Used to run Arquillian-->
+                    </configuration>
+                    <executions>
+                        <!-- Create server during package phase for running the application AND Arquillian -->
+                        <execution>
+                            <phase>pre-integration-test</phase>
+                            <goals>
+                                <goal>create-server</goal>
+                            </goals>
+                        </execution>
+                        <!-- Used for running the application, not for Arquillian-->
+                        <execution>
+                            <id>deploy-app</id>
+                            <goals>
+                                <goal>deploy</goal>
+                            </goals>
+                            <configuration>
+                                <appArchive>${project.basedir}\target\${project.build.finalName}.war</appArchive>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Copy jars to Liberty's /lib -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.1</version>
+                    <!-- Copy database connectors during package phase for running the application AND Arquillian. -->
+                    <executions>
+                        <execution>
+                            <id>copy</id>
+                            <phase>pre-integration-test</phase>
+                            <goals>
+                                <goal>copy</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>com.h2database</groupId>
+                                <artifactId>h2</artifactId>
+                                <version>1.4.200</version>
+                                <type>jar</type>
+                                <overWrite>false</overWrite>
+                                <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/config/lib/
+                                </outputDirectory>
+                                <destFileName>h2.jar</destFileName>
+                            </artifactItem>
+                            <artifactItem>
+                                <groupId>mysql</groupId>
+                                <artifactId>mysql-connector-java</artifactId>
+                                <version>8.0.22</version>
+                                <type>jar</type>
+                                <overWrite>false</overWrite>
+                                <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/config/lib/
+                                </outputDirectory>
+                                <destFileName>mysql.jar</destFileName>
+                            </artifactItem>
+                        </artifactItems>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
