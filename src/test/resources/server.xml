@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+    <!-- Enable features -->
+    <featureManager>
+        <feature>webProfile-8.0</feature>
+        <feature>localConnector-1.0</feature>
+    </featureManager>
+
+    <!--JPA:-->
+    <!-- MySQL for production -->
+    <dataSource id="DefaultDataSource" jndiName="jdbc/mySQL" type="javax.sql.XADataSource">
+        <jdbcDriver javax.sql.XADataSource="com.mysql.cj.jdbc.MysqlXADataSource" libraryRef="MySQLLib"/>
+        <properties databaseName="restdemo" user="root" password="root" portNumber="3306" serverName="localhost" useSSL="false"/>
+    </dataSource>
+    <library id="MySQLLib">
+        <file name="${wlp.install.dir}/usr/shared/config/lib/mysql.jar"/>
+    </library>
+
+    <!-- H2 for arquillian integration tests -->
+    <dataSource id="h2test" jndiName="jdbc/h2">
+        <jdbcDriver libraryRef="H2Lib"/>
+        <properties URL="jdbc:h2:mem:testdb" user="sa" password=""/>
+    </dataSource>
+    <library id="H2Lib">
+        <file name="${wlp.install.dir}/usr/shared/config/lib/h2.jar"/>
+    </library>
+
+    <!--JPA - end-->
+
+    <!--for testing use a different port than for dev/prod: -->
+    <httpEndpoint host="*" httpPort="9081" httpsPort="9444" id="defaultHttpEndpoint"/>
+
+</server>

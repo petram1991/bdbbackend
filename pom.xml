@@ -82,10 +82,15 @@
             <version>2.0.1.Final</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <finalName>bdbbackend</finalName>
-        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
@@ -118,7 +123,21 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>3.0.0-M4</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>net.wasdev.wlp.maven.plugins</groupId>
@@ -143,15 +162,6 @@
                             </goals>
                         </execution>
                         <!-- Used for running the application, not for Arquillian-->
-                        <execution>
-                            <id>deploy-app</id>
-                            <goals>
-                                <goal>deploy</goal>
-                            </goals>
-                            <configuration>
-                                <appArchive>${project.basedir}\target\${project.build.finalName}.war</appArchive>
-                            </configuration>
-                        </execution>
                     </executions>
                 </plugin>
                 <!-- Copy jars to Liberty's /lib -->
@@ -195,7 +205,7 @@
                     </configuration>
                 </plugin>
             </plugins>
-        </pluginManagement>
+
     </build>
 
 </project>

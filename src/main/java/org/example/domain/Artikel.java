@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 
 @Data
 @Entity
@@ -23,4 +24,9 @@ public class Artikel {
     private double prijs;
     @Enumerated(value = EnumType.STRING)
     private StatusArtikel statusArtikel = StatusArtikel.ACTIEF;
+
+    @ManyToOne
+    private Gebruiker aanbieder;
+
+
 }

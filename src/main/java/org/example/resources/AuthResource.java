@@ -1,6 +1,5 @@
 package org.example.resources;
 
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.example.dao.GebruikerDao;
@@ -38,7 +37,6 @@ public class AuthResource {
     public Response geefalles(){
         return Response.ok(dao.geefAlles()).build();
     }
-
 
     @GET
     @Path("{id}")

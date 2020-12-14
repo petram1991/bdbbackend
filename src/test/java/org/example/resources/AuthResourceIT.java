@@ -1,11 +1,7 @@
 package org.example.resources;
 
 import org.example.App;
-import org.example.dao.GebruikerDao;
 import org.example.domain.Gebruiker;
-import org.example.util.KeyGenerator;
-import org.example.util.SimpleKeyGenerator;
-import org.example.util.WachtwoordUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -44,13 +40,8 @@ public class AuthResourceIT {
     @Deployment
     public static Archive<?> createDeployment() {
         WebArchive archive = ShrinkWrap.create(WebArchive.class,"AuthResourceIT.war")
-                .addClass(App.class)
-                .addClass(AuthResource.class)
-                .addClass(Gebruiker.class)
-                .addClass(GebruikerDao.class)
-                .addClass(KeyGenerator.class)
-                .addClass(SimpleKeyGenerator.class)
-                .addClass(WachtwoordUtils.class);
+                .addPackages(true, App.class.getPackage());
+
 
         System.out.println(archive.toString(true));
         return archive;
@@ -59,7 +50,7 @@ public class AuthResourceIT {
     @Test
     public void geefalles() {
         Client http = ClientBuilder.newClient();
-       Gebruiker gebruiker = Gebruiker.builder().id(1).gebruiksnaam("tom").email("test@novi.nl").wachtwoord("test123").build();
+       Gebruiker gebruiker = Gebruiker.builder().id(1).gebruiksnaam("tom").email("test@novi.nl").build();
 
        String postGebruiker = http
                .target(authResource)
@@ -75,6 +66,5 @@ public class AuthResourceIT {
         assertThat(allContacts, containsString("\"id\":\"1\""));
         assertThat(allContacts, containsString("\"gebruiksnaam\":\"tom\""));
         assertThat(allContacts, containsString("\"email\":\"test@novi.nl\""));
-        assertThat(allContacts, containsString("\"wachtwoord\":\"test123\""));
     }
 }

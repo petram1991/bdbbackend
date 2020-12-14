@@ -26,6 +26,10 @@ public class GebruikerDao {
         return em.find(Gebruiker.class, id);
     }
 
+    public void update(Gebruiker gebruiker){
+        em.merge(gebruiker);
+    }
+
     public void authenticate(String gebruiksnaam, String wachtwoord) {
         TypedQuery<Gebruiker> query = em.createNamedQuery(Gebruiker.VIND_GEBRUIKER_WACHTWOORD, Gebruiker.class);
         query.setParameter("gebruiksnaam", gebruiksnaam);

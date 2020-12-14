@@ -18,4 +18,9 @@ public class ArtikelDao {
     public void aanmaken(Artikel artikel){
         em.persist(artikel);
     }
+
+   public void update(Artikel artikel) {
+       em.merge(artikel);
+   }
+
 }

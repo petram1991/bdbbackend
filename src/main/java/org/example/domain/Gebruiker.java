@@ -8,6 +8,8 @@ import org.example.util.WachtwoordUtils;
 
 import javax.persistence.*;
 
+import java.util.*;
+
 @Data
 @Entity
 @Builder
@@ -27,6 +29,9 @@ public class Gebruiker {
     private String gebruiksnaam;
     private String email;
     private String wachtwoord;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy ="aanbieder")
+    private List<Artikel> aangebodenArtikel;
 
     @PrePersist
     private void setUUID() {

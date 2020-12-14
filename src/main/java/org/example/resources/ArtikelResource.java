@@ -1,14 +1,10 @@
 package org.example.resources;
 
-
 import org.example.dao.ArtikelDao;
 import org.example.domain.Artikel;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -26,9 +22,10 @@ public class ArtikelResource {
 
     @Path("/nieuw")
     @POST
-    public Response aanmakenArtikel(Artikel artikel){
+    public Artikel aanmakenArtikel(Artikel artikel){
         dao.aanmaken(artikel);
-        return Response.ok().build();
+        return artikel;
     }
+
 
 }
