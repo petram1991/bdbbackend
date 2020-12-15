@@ -3,6 +3,7 @@ package org.example.resources;
 import org.example.dao.ArtikelDao;
 import org.example.domain.Artikel;
 
+
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -27,5 +28,11 @@ public class ArtikelResource {
         return artikel;
     }
 
+    @GET
+    @Path("{id}")
+    public Response geefArtikel(@PathParam("id") Long id){
+        Artikel artikel = dao.vindBijId(id);
 
+        return Response.ok(artikel).build();
+    }
 }

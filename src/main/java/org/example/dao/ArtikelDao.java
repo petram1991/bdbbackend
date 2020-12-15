@@ -11,6 +11,10 @@ public class ArtikelDao {
     @PersistenceContext
     private EntityManager em;
 
+    public Artikel vindBijId(long id){
+        return em.find(Artikel.class, id);
+    }
+
     public Object geefAlles(){
         return em.createNamedQuery("Artikel.vindAlles", Artikel.class).getResultList();
     }
