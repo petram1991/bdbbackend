@@ -19,8 +19,6 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import static java.time.LocalDateTime.now;
-import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/auth")
@@ -55,17 +53,18 @@ public class AuthResource {
 
     @Path("/inloggen")
     @POST
-    public Response authenticateGebruiker(Gebruiker gebruiker){
+    public Gebruiker authenticateGebruiker(Gebruiker gebruiker){
         try{
             String gebruiksnaam = gebruiker.getGebruiksnaam();
             String wachtwoord = gebruiker.getWachtwoord();
 
-            dao.authenticate(gebruiksnaam, wachtwoord);
-            String token = issueToken(gebruiksnaam);
+           Gebruiker g = dao.authenticate(gebruiksnaam, wachtwoord);
+            //String token = issueToken(gebruiksnaam);
 
-            return Response.ok().header(AUTHORIZATION, "Bearer " + token).build();
+            //return Response.ok().header(AUTHORIZATION, "Bearer " + token).build();
+            return g;
         } catch (Exception e) {
-            return Response.status(UNAUTHORIZED).build();
+            throw new NotAuthorizedException(" Gebruiker " + gebruiker + " is not authorized" );
         }
     }
     private String issueToken(String login) {

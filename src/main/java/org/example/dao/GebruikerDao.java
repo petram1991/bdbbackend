@@ -30,12 +30,14 @@ public class GebruikerDao {
         em.merge(gebruiker);
     }
 
-    public void authenticate(String gebruiksnaam, String wachtwoord) {
+    public Gebruiker authenticate(String gebruiksnaam, String wachtwoord) {
         TypedQuery<Gebruiker> query = em.createNamedQuery(Gebruiker.VIND_GEBRUIKER_WACHTWOORD, Gebruiker.class);
         query.setParameter("gebruiksnaam", gebruiksnaam);
         query.setParameter("wachtwoord", WachtwoordUtils.digestPassword(wachtwoord));
         Gebruiker gebruiker = query.getSingleResult();
 
         if (gebruiker == null) throw new SecurityException("Verkeerde gebruiksnaam/wachtwoord");
+        return gebruiker;
     }
+
 }
