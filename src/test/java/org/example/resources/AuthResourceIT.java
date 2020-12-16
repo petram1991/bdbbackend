@@ -27,9 +27,8 @@ public class AuthResourceIT {
 
     @ArquillianResource
     private URL deploymentUrl;
-
-    private static String authResource;
-    private static String gebruikersUri = "resources/auth";
+    private String authResource;
+    private String gebruikersUri = "resources/auth";
 
 
     @Before
@@ -40,7 +39,9 @@ public class AuthResourceIT {
     @Deployment
     public static Archive<?> createDeployment() {
         WebArchive archive = ShrinkWrap.create(WebArchive.class,"AuthResourceIT.war")
-                .addPackages(true, App.class.getPackage());
+                .addPackages(true, App.class.getPackage())
+                .addAsWebInfResource("test-beans.xml", "beans.xml")
+                .addAsResource("test-persistence.xml", "META-INF/persistence.xml");
 
 
         System.out.println(archive.toString(true));
@@ -50,21 +51,20 @@ public class AuthResourceIT {
     @Test
     public void geefalles() {
         Client http = ClientBuilder.newClient();
-       Gebruiker gebruiker = Gebruiker.builder().id(1).gebruiksnaam("tom").email("test@novi.nl").build();
+       Gebruiker gebruiker = Gebruiker.builder().gebruiksnaam("tom").email("test@novi.nl").build();
 
-       String postGebruiker = http
+       String postedGebruiker = http
                .target(authResource)
                .request().post(entity(gebruiker, APPLICATION_JSON), String.class);
-        System.out.println(postGebruiker);
 
-        String allContacts = http
+       System.out.println(postedGebruiker);
+
+        String allGebruikers = http
                 .target(authResource)
                 .request().get(String.class);
 
-        System.out.println(allContacts);
+        assertThat(allGebruikers, containsString("\"gebruiksnaam\":\"tom\""));
+        assertThat(allGebruikers, containsString("\"email\":\"test@novi.nl\""));
 
-        assertThat(allContacts, containsString("\"id\":\"1\""));
-        assertThat(allContacts, containsString("\"gebruiksnaam\":\"tom\""));
-        assertThat(allContacts, containsString("\"email\":\"test@novi.nl\""));
     }
 }

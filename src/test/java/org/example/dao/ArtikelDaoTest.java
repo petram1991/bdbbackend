@@ -24,9 +24,6 @@ class ArtikelDaoTest {
     private ArtikelDao target;
 
     @Mock
-    private EntityTransaction transactionMock;
-
-    @Mock
     private Artikel artikelMock;
 
     @Mock
